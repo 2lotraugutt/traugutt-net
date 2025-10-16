@@ -6,7 +6,6 @@ import DatabaseTile from "./databaseTile";
 import DayTile from "./dayTile";
 import ExpandingDay from "./expandingDay";
 
-
 export default function CalendarComponent(props: { today: Date; month: number; year: number; setTag: Function }) {
 	const [days, setDays] = useState<DayDataType[]>([]);
 	const [fetched, setFetched] = useState<boolean>(false);
@@ -27,7 +26,7 @@ export default function CalendarComponent(props: { today: Date; month: number; y
 		async function fetchPost() {
 			setFetched(false);
 			const days = await (await fetch(`api/calendar/days?month=${props.month}&year=${props.year}`)).json();
-			console.log(days);
+
 			setDays(days);
 			setFetched(true);
 		}
@@ -110,4 +109,3 @@ export default function CalendarComponent(props: { today: Date; month: number; y
 			</div>
 		);
 }
-

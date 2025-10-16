@@ -23,15 +23,14 @@ export default function Page() {
 	}, [router]);
 
 	async function fetchAnnouncements() {
-		const returnedAnnouncements = await(await fetch(`/api/dashboard/announcement?count=${announcementsCount * 30}`)).json();
+		const returnedAnnouncements = await (await fetch(`/api/dashboard/announcement?count=${announcementsCount * 30}`)).json();
 		setAnnouncements(returnedAnnouncements);
-		console.log(returnedAnnouncements);
 
 		setAnnouncementsCount((oldCount) => oldCount + 1);
 	}
 
 	async function refetchAnnouncements() {
-		const returnedAnnouncements = await(await fetch(`/api/dashboard/announcement?count=${announcementsCount * 30}`)).json();
+		const returnedAnnouncements = await (await fetch(`/api/dashboard/announcement?count=${announcementsCount * 30}`)).json();
 		setAnnouncements(returnedAnnouncements);
 	}
 
