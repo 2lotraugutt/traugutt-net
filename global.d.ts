@@ -209,3 +209,10 @@ type TeacherDataType = {
 	subjects: string[];
 	class: string?;
 };
+
+type ResetToken = {
+	token: string;
+	createdAt: Date;
+	login: string;
+	email: string;
+};

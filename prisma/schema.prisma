@@ -176,3 +176,10 @@ model Teacher {
   subjects    String[]
   class       String?
 }
+
+model ResetToken {
+  token     String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  createdAt DateTime @default(now())
+  email     String
+  login     String
+}
