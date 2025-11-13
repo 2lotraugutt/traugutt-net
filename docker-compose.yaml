@@ -1,6 +1,6 @@
 services:
   traugutt-net-web-image:
-    build: .
+    image: git.traugutt.net/traugutt/traugutt-net:prod
     container_name: traugutt-net-website
     ports:
       - "3000:3000"
