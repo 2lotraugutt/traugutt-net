@@ -1,0 +1,49 @@
+services:
+  traugutt-net-web-image:
+    build: .
+    container_name: traugutt-net-website
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    depends_on:
+      - traugutt-net-db
+    volumes:
+      - .:/app
+      - /hdd/postImages:/app/postImages
+    command: >
+      sh -c "
+        until nc -z traugutt-net-postgres 5432; sleep .1
+        npx prisma db push
+        npm run build
+        npm run start
+      "
+    networks:
+      global:
+        ipv4_address: 10.11.1.10
+
+  traugutt-net-db:
+    image: postgres:15-alpine
+    container_name: traugutt-net-postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      global:
+        ipv4_address: 10.11.1.11
+
+volumes:
+    pgdata:
+
+networks:
+  global:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.11.0.0/16
+          gateway: 10.11.0.1
