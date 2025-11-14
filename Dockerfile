@@ -1,4 +1,8 @@
-FROM node:24-alpine AS base
+FROM node:24-alpine AS alpine
+
+FROM alpine AS base
+RUN apk add --no-cache openssl
+
 
 # Install dependencies only when needed
 FROM base AS deps
@@ -17,7 +21,6 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-RUN apk add --no-cache openssl
 
 ENV NEXT_TELEMETRY_DISABLED=1
 
@@ -30,6 +33,8 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
+
+RUN apk add --no-cache openssl
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
