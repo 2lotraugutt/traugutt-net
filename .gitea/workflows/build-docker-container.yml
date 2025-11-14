@@ -40,4 +40,4 @@ jobs:
 
       - name: Log out from registry
         if: always()
-        run: docker logout registry.example.com
+        run: docker logout git.traugutt.net
