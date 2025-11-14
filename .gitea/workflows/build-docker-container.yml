@@ -25,17 +25,12 @@ jobs:
           SHORT_HASH: ${{ github.sha }}
         run: |
           # Build the image with the commit hash tag
-          docker build --build-arg BUILD_IDENTIFIER=${SHORT_HASH:0:5} -t git.traugutt.net/traugutt/traugutt-net/docker:${BRANCH_NAME}-${SHORT_HASH:0:5} .
-
-          # Tag the same image as "latest"
-          docker tag git.traugutt.net/traugutt/traugutt-net/docker:${BRANCH_NAME}-${SHORT_HASH:0:5} git.traugutt.net/traugutt/traugutt-net/docker:${BRANCH_NAME}-latest
-
-      - name: Push Docker Images
+          docker build -t git.traugutt.net/traugutt/traugutt-net/docker:${BRANCH_NAME}-latest .
+      - name: Push Docker Image
         env:
           BRANCH_NAME: ${{ github.ref_name }}
           SHORT_HASH: ${{ github.sha }}
         run: |
-          docker push git.traugutt.net/traugutt/traugutt-net/docker:${BRANCH_NAME}-${SHORT_HASH:0:5}
           docker push git.traugutt.net/traugutt/traugutt-net/docker:${BRANCH_NAME}-latest
 
       - name: Log out from registry
