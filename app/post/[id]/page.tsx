@@ -17,9 +17,11 @@ export default function Page({ params }: { params: { id: string } }) {
 		fetchPosts();
 		fetchTopPosts();
 		async function fetchTopPosts() {
-			const posts = await (await fetch("/api/posts/topPosts/?count=3")).json();
+			const posts = await (await fetch("/api/posts/topPosts/?count=4")).json();
 
-			setTopPost(posts);
+			const filteredTopPosts = posts.filter((topPost: PostDataType) => String(topPost.id) !== params.id).slice(2);
+
+			setTopPost(filteredTopPosts);
 		}
 
 		async function fetchPosts() {
