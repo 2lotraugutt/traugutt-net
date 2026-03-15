@@ -19,7 +19,7 @@ export default function Page({ params }: { params: { id: string } }) {
 		async function fetchTopPosts() {
 			const posts = await (await fetch("/api/posts/topPosts/?count=4")).json();
 
-			const filteredTopPosts = posts.filter((topPost: PostDataType) => String(topPost.id) !== params.id).slice(2);
+			const filteredTopPosts = posts.filter((topPost: PostDataType) => String(topPost.id) !== params.id).slice(0, 3);
 
 			setTopPost(filteredTopPosts);
 		}
