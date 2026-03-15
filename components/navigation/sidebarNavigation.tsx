@@ -2,7 +2,6 @@ import { IconDefinition } from "@fortawesome/fontawesome-svg-core";
 import { faFacebook, faInstagram, faTiktok, faYoutube } from "@fortawesome/free-brands-svg-icons";
 import {
 	faAngleRight,
-	faBullhorn,
 	faClipboardList,
 	faFile,
 	faFileWord,
@@ -95,14 +94,6 @@ export default function SidebarNavigation(props: { toggle: Function }) {
 			<div className="h-1 bg-DarkColor/40 rounded-lg"></div>
 
 			<div className="flex flex-col gap-y-1">
-				{/* <Link href={""} className="sidebar-button">
-					<FontAwesomeIcon icon={faShop} className="w-6 h-6 text-white py-3 px-4" />
-					<div className={`poppinsFont600`}>Sklep z odzieżą</div>
-				</Link> */}
-				<Link href={"/radio/today"} className="sidebar-button" onClick={() => closeNavbar()}>
-					<FontAwesomeIcon icon={faBullhorn} className="w-6 h-6 text-white py-3 px-4" />
-					<div className={`poppinsFont600`}>Dzisiejsze komunikaty</div>
-				</Link>
 				<Link href={"https://uonetplus.vulcan.net.pl/czestochowa"} onClick={() => closeNavbar()} target="blank" className="sidebar-button">
 					<FontAwesomeIcon icon={faTableList} className="w-6 h-6 text-white py-3 px-4" />
 					<div className={`poppinsFont600`}>Dziennik elektroniczny</div>
@@ -169,7 +160,10 @@ export default function SidebarNavigation(props: { toggle: Function }) {
 								<div>{nav.name}</div>
 
 								{routes && routesForNav.length != 0 && (
-									<FontAwesomeIcon icon={faAngleRight} className={`w-5 h-5 transition-all duration-300 ms-auto text-white px-4 ${openedList[i] && "rotate-90"}`} />
+									<FontAwesomeIcon
+										icon={faAngleRight}
+										className={`w-5 h-5 transition-all duration-300 ms-auto text-white px-4 ${openedList[i] && "rotate-90"}`}
+									/>
 								)}
 							</motion.button>
 
@@ -188,7 +182,13 @@ export default function SidebarNavigation(props: { toggle: Function }) {
 										</div>
 										<div className="flex flex-col gap-y-1 grow">
 											{routesForNav.map((route, j) => (
-												<Link key={j} target="_blank" onClick={() => closeNavbar()} className={`sidebar-button px-3 py-1.5 w-full poppinsFont500`} href={route.link}>
+												<Link
+													key={j}
+													target="_blank"
+													onClick={() => closeNavbar()}
+													className={`sidebar-button px-3 py-1.5 w-full poppinsFont500`}
+													href={route.link}
+												>
 													{route.name}
 												</Link>
 											))}

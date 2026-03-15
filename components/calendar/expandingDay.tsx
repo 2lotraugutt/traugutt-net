@@ -1,7 +1,6 @@
-import { faBullhorn, faLink } from "@fortawesome/free-solid-svg-icons";
+import { faLink } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { motion } from "framer-motion";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 export default function ExpandingDay(props: { expandedDayData: DayDataType; expandedDay: string; hideExpanded: Function; setTag: Function }) {
@@ -22,11 +21,6 @@ export default function ExpandingDay(props: { expandedDayData: DayDataType; expa
 				>
 					{props.expandedDayData.day} {monthsNames[props.expandedDayData.month]} {props.expandedDayData.year}
 				</motion.div>
-				{props.expandedDayData.announcements.length != 0 && (
-					<Link href={"/radio/" + props.expandedDayData.date} className="ms-auto hover:text-MainColor text-xs sm:text-sm lg:text-base xl:text-lg 3xl:text-xl">
-						<FontAwesomeIcon icon={faBullhorn} />
-					</Link>
-				)}
 
 				<motion.div
 					className={`flex justify-center items-center gap-x-1.5 md:gap-x-3 text-2xs md:text-xs lg:text-sm xl:text-base 3xl:text-xl text-MainDarkGray ${
