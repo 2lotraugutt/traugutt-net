@@ -10,6 +10,7 @@ export default function PageTile(props: { pageData: { file: string; content: str
 	const [deleteButtonText, setDeleteButtonText] = useState("Usuń podstronę");
 	const [newContent, setNewContent] = useState(props.pageData.content);
 	const [editing, setEditing] = useState(false);
+	const [editError, setEditError] = useState("");
 
 	async function deletePost() {
 		setDeleteButtonText("Usuwanie...");
@@ -26,22 +27,28 @@ export default function PageTile(props: { pageData: { file: string; content: str
 
 	async function toggleEditing() {
 		if (editing) {
+			setEditError("");
 			const data = new FormData();
 			data.set("content", newContent);
 
-			const res = await fetch(`/api/dashboard/pages/${props.pageData.file}`, {
-				method: "POST",
-				body: data,
-			});
+			try {
+				const res = await fetch(`/api/dashboard/pages/${props.pageData.file}`, {
+					method: "POST",
+					body: data,
+				});
 
-			if (!res.ok) throw new Error(await res.text());
+				if (!res.ok) {
+					setEditError("Nie udało się zapisać zmian.");
+					return;
+				}
 
-			if (res.ok) {
 				props.refetchPages();
+				setEditing(false);
+			} catch {
+				setEditError("Wystąpił błąd połączenia.");
 			}
-
-			setEditing(false);
 		} else {
+			setEditError("");
 			setNewContent(props.pageData.content);
 			setEditing(true);
 		}
@@ -102,6 +109,7 @@ export default function PageTile(props: { pageData: { file: string; content: str
 						<FontAwesomeIcon icon={faTrash} />
 					</div>
 				</button>
+				{editError && <p className="text-sm text-red-600">{editError}</p>}
 			</div>
 		</div>
 	);

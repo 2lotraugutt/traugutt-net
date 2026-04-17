@@ -54,16 +54,21 @@ export default function NotificationTile(props: { notificationData: Notification
 		data.set("title", title);
 		data.set("content", content);
 
-		const res = await fetch("/api/dashboard/notifications/", {
-			method: "PUT",
-			body: data,
-		});
+		try {
+			const res = await fetch("/api/dashboard/notifications/", {
+				method: "PUT",
+				body: data,
+			});
 
-		if (!res.ok) throw new Error(await res.text());
+			if (!res.ok) {
+				setEditButtonText("Wystąpił błąd");
+				return;
+			}
 
-		if (res.ok) {
 			setIsEditing(false);
 			setEditButtonText("Edytuj informację");
+		} catch {
+			setEditButtonText("Wystąpił błąd");
 		}
 	}
 

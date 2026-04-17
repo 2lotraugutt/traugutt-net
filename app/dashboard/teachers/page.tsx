@@ -17,6 +17,7 @@ export default function TeacherDashboardPage() {
 	const [teachers, setTeachers] = useState<TeacherDataType[]>([]);
 	const [emailValid, setEmailValid] = useState(true);
 	const [imageError, setImageError] = useState(false);
+	const [submitError, setSubmitError] = useState("");
 
 	const router = useRouter();
 
@@ -64,6 +65,13 @@ export default function TeacherDashboardPage() {
 	async function upload() {
 		if (!emailValid) return;
 
+		if (!newName.trim() || !newLastName.trim()) {
+			setSubmitError("Imię i nazwisko są wymagane.");
+			return;
+		}
+
+		setSubmitError("");
+
 		const data = new FormData();
 		data.append("image", newImage);
 		data.append("name", newName);
@@ -74,14 +82,18 @@ export default function TeacherDashboardPage() {
 		data.append("class", newClass);
 		data.append("subjects", JSON.stringify(newSubjects)); // Send array as stringified JSON
 
-		const res = await fetch("/api/dashboard/teachers", {
-			method: "POST",
-			body: data,
-		});
+		try {
+			const res = await fetch("/api/dashboard/teachers", {
+				method: "POST",
+				body: data,
+			});
 
-		if (!res.ok) throw new Error(await res.text());
+			if (!res.ok) {
+				const responseData = await res.json().catch(() => null);
+				setSubmitError(responseData?.error || "Nie udało się dodać nauczyciela.");
+				return;
+			}
 
-		if (res.ok) {
 			setNewName("");
 			setNewLastName("");
 			setNewTitle("");
@@ -92,6 +104,8 @@ export default function TeacherDashboardPage() {
 			setNewImage("");
 			setSubjectInput("");
 			fetchTeachers();
+		} catch {
+			setSubmitError("Wystąpił błąd połączenia. Spróbuj ponownie.");
 		}
 	}
 
@@ -249,6 +263,7 @@ export default function TeacherDashboardPage() {
 				>
 					Dodaj nauczyciela
 				</button>
+				{submitError && <p className="text-sm text-red-600 mt-1">{submitError}</p>}
 			</div>
 
 			<div className="flex w-full flex-col gap-y-3 mt-6">

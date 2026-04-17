@@ -80,17 +80,23 @@ export default function Page() {
 
 		setButtonText("Generowanie...");
 
-		const res = await fetch("/api/dashboard/numbers/", {
-			method: "POST",
-			body: data,
-		});
+		try {
+			const res = await fetch("/api/dashboard/numbers/", {
+				method: "POST",
+				body: data,
+			});
 
-		if (!res.ok) throw new Error(await res.text());
-		if (res.ok) {
+			if (!res.ok) {
+				setButtonText("Wystąpił błąd");
+				return;
+			}
+
 			setButtonText("Wylosuj numerki");
 			setStartDate(null);
 			setEndDate(null);
 			reFetch();
+		} catch {
+			setButtonText("Wystąpił błąd");
 		}
 	}
 

@@ -36,7 +36,7 @@ export default function AnnouncementTile(props: { announcementData: Announcement
 	async function toggleAnnouncement() {
 		setPublishButtonText("Ładowanie...");
 
-		const newStatus = await(await fetch(`/api/dashboard/announcement/publish/${props.announcementData.id}?toggle=${!status}`)).json();
+		const newStatus = await (await fetch(`/api/dashboard/announcement/publish/${props.announcementData.id}?toggle=${!status}`)).json();
 
 		setStatus(newStatus);
 		setPublishButtonText(newStatus ? "Ukryj post" : "Opublikuj post");
@@ -52,16 +52,21 @@ export default function AnnouncementTile(props: { announcementData: Announcement
 			data.append("dates[]", date);
 		}
 
-		const res = await fetch("/api/dashboard/announcement/", {
-			method: "PUT",
-			body: data,
-		});
+		try {
+			const res = await fetch("/api/dashboard/announcement/", {
+				method: "PUT",
+				body: data,
+			});
 
-		if (!res.ok) throw new Error(await res.text());
+			if (!res.ok) {
+				setEditButtonText("Wystąpił błąd");
+				return;
+			}
 
-		if (res.ok) {
 			setIsEditing(false);
 			setEditButtonText("Edytuj komunikat");
+		} catch {
+			setEditButtonText("Wystąpił błąd");
 		}
 	}
 
@@ -132,7 +137,7 @@ export default function AnnouncementTile(props: { announcementData: Announcement
 					</div>
 					<div className="dashboardPostTileDataRow">
 						<p className="h-fit">{status ? "Opublikowany przez: " : "Ukryty przez: "}</p>
-						<div className={`dashboardPostTileData plusJakartaSans700`}>{editedStatus ? user.name : props.announcementData.publishedBy?.name ?? "---"}</div>{" "}
+						<div className={`dashboardPostTileData plusJakartaSans700`}>{editedStatus ? user.name : (props.announcementData.publishedBy?.name ?? "---")}</div>{" "}
 					</div>
 				</div>
 			)}

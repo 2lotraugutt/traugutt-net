@@ -24,19 +24,25 @@ export default function CreateEventForm(props: { refetchEvents: Function; tags: 
 		}
 
 		setButtonText("Dodawanie wydarzenia...");
-		const res = await fetch("/api/dashboard/calendar/events/", {
-			method: "POST",
-			body: data,
-		});
+		try {
+			const res = await fetch("/api/dashboard/calendar/events/", {
+				method: "POST",
+				body: data,
+			});
 
-		if (!res.ok) throw new Error(await res.text());
-		if (res.ok) {
+			if (!res.ok) {
+				setButtonText("Wystąpił błąd");
+				return;
+			}
+
 			setSelectedTags(new Array(props.tags.length).fill(false));
 			setNewName("");
 			setNewDescription("");
 			setNewDate("");
 			setButtonText("Dodaj wydarzenia");
 			props.refetchEvents();
+		} catch {
+			setButtonText("Wystąpił błąd");
 		}
 	}
 

@@ -11,6 +11,7 @@ function EditComponent(props: { text: string | null }) {
 	const [edit, setEdit] = useState<boolean>(false);
 	const [show, setShow] = useState<boolean>(false);
 	const [newContent, setNewContent] = useState(props.text);
+	const [submitError, setSubmitError] = useState("");
 
 	const pathname = usePathname();
 	const router = useRouter();
@@ -27,18 +28,25 @@ function EditComponent(props: { text: string | null }) {
 	}, [router]);
 
 	async function confirmEdit() {
+		setSubmitError("");
 		const data = new FormData();
 		data.set("content", newContent!);
 
-		const res = await fetch(`/api/dashboard/pages/${pathname.split("/").at(-1)}.mdx`, {
-			method: "POST",
-			body: data,
-		});
+		try {
+			const res = await fetch(`/api/dashboard/pages/${pathname.split("/").at(-1)}.mdx`, {
+				method: "POST",
+				body: data,
+			});
 
-		if (!res.ok) throw new Error(await res.text());
+			if (!res.ok) {
+				const responseData = await res.json().catch(() => null);
+				setSubmitError(responseData?.error || "Nie udało się zapisać zmian.");
+				return;
+			}
 
-		if (res.ok) {
 			router.refresh();
+		} catch {
+			setSubmitError("Wystąpił błąd połączenia. Spróbuj ponownie.");
 		}
 	}
 	if (edit && newContent != null)
@@ -66,6 +74,7 @@ function EditComponent(props: { text: string | null }) {
 								<FontAwesomeIcon icon={faCheck} />
 							</div>
 						</button>
+						{submitError && <p className="text-sm text-red-600">{submitError}</p>}
 					</>
 				)}
 			</div>

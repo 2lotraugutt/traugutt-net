@@ -14,6 +14,7 @@ export default function Page() {
 	const [newPageName, setNewPageName] = useState("");
 	const [newContent, setNewContent] = useState("");
 	const [filter, setFilter] = useState("");
+	const [submitError, setSubmitError] = useState("");
 
 	const router = useRouter();
 	useEffect(() => {
@@ -40,20 +41,27 @@ export default function Page() {
 	}
 
 	async function addPage() {
+		setSubmitError("");
 		const data = new FormData();
 		data.set("content", newContent);
 
-		const res = await fetch(`/api/dashboard/pages/${newPageName}.mdx`, {
-			method: "POST",
-			body: data,
-		});
+		try {
+			const res = await fetch(`/api/dashboard/pages/${newPageName}.mdx`, {
+				method: "POST",
+				body: data,
+			});
 
-		if (!res.ok) throw new Error(await res.text());
+			if (!res.ok) {
+				const responseData = await res.json().catch(() => null);
+				setSubmitError(responseData?.error || "Nie udało się dodać podstrony.");
+				return;
+			}
 
-		if (res.ok) {
 			setNewPageName("");
 			setNewContent("");
 			fetchPages();
+		} catch {
+			setSubmitError("Wystąpił błąd połączenia. Spróbuj ponownie.");
 		}
 	}
 
@@ -89,6 +97,7 @@ export default function Page() {
 					>
 						Dodaj podstronę
 					</button>
+					{submitError && <p className="text-sm text-red-600 mt-1">{submitError}</p>}
 				</div>
 
 				<input

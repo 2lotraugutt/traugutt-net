@@ -35,15 +35,21 @@ export default function EditingForm(props: { initialData: EventDataTypeWithAutho
 		}
 
 		setButtonText("Edytowanie wydarzenia...");
-		const res = await fetch("/api/dashboard/calendar/events/", {
-			method: "PUT",
-			body: data,
-		});
+		try {
+			const res = await fetch("/api/dashboard/calendar/events/", {
+				method: "PUT",
+				body: data,
+			});
 
-		if (!res.ok) throw new Error(await res.text());
-		if (res.ok) {
+			if (!res.ok) {
+				setButtonText("Wystąpił błąd");
+				return;
+			}
+
 			props.closeEdit();
 			props.refetchEvents();
+		} catch {
+			setButtonText("Wystąpił błąd");
 		}
 	}
 

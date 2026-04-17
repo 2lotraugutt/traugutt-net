@@ -13,12 +13,12 @@ export async function POST(request: NextRequest) {
 			const email = (data.get("email") as string) || null;
 			const description = (data.get("description") as string) || null;
 			const className = (data.get("class") as string) || null;
-			const image = (data.get("image") as string) || null;
-			const name = (data.get("name") as string) || null;
-			const lastName = (data.get("lastName") as string) || null;
-			const subjects: string = data.get("subjects") as string;
+			const image = ((data.get("image") as string) || "").trim();
+			const name = ((data.get("name") as string) || "").trim();
+			const lastName = ((data.get("lastName") as string) || "").trim();
+			const subjects: string = (data.get("subjects") as string) || "[]";
 
-			if (!name || !lastName || !image) {
+			if (!name || !lastName) {
 				return NextResponse.json({ error: "Name and last name are required" }, { status: 400 });
 			}
 			await prisma.teacher.create({
@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
 					lastName,
 					email,
 					description,
-					image,
+					image: image || "/teacherDefault.png",
 					class: className,
 					subjects: JSON.parse(subjects),
 				},
@@ -66,12 +66,12 @@ export async function PUT(request: NextRequest) {
 			const email = (data.get("email") as string) || null;
 			const description = (data.get("description") as string) || null;
 			const className = (data.get("class") as string) || null;
-			const image = (data.get("image") as string) || null;
-			const name = (data.get("name") as string) || null;
-			const lastName = (data.get("lastName") as string) || null;
-			const subjects: string = data.get("subjects") as string;
+			const image = ((data.get("image") as string) || "").trim();
+			const name = ((data.get("name") as string) || "").trim();
+			const lastName = ((data.get("lastName") as string) || "").trim();
+			const subjects: string = (data.get("subjects") as string) || "[]";
 
-			if (!name || !lastName || !image) {
+			if (!name || !lastName) {
 				return NextResponse.json({ error: "Name and last name are required" }, { status: 400 });
 			}
 			await prisma.teacher.update({
@@ -82,7 +82,7 @@ export async function PUT(request: NextRequest) {
 					lastName,
 					email,
 					description,
-					image,
+					image: image || "/teacherDefault.png",
 					class: className,
 					subjects: JSON.parse(subjects),
 				},

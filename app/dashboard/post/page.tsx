@@ -39,14 +39,21 @@ export default function Page() {
 			data.append("gallery[]", file.image as any, file.image.name);
 		}
 
-		const res = await fetch("/api/dashboard/posts/post", {
-			method: "POST",
-			body: data,
-		});
-		// handle the error
-		if (!res.ok) throw new Error(await res.text());
+		try {
+			const res = await fetch("/api/dashboard/posts/post", {
+				method: "POST",
+				body: data,
+			});
 
-		if (res.ok) setUploaded(true);
+			if (!res.ok) {
+				setUploaded(false);
+				return;
+			}
+
+			setUploaded(true);
+		} catch {
+			setUploaded(false);
+		}
 	}
 
 	if (stage == 0) return <NewPostStageZero up={stageUp} />;

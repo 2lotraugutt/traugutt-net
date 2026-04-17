@@ -7,25 +7,33 @@ import { useEffect, useState } from "react";
 export default function Page() {
 	const [newTitle, setNewTitle] = useState("");
 	const [newContent, setNewContent] = useState("");
+	const [submitError, setSubmitError] = useState("");
 	const [notifications, setNotifications] = useState<NotificationDataType[]>([]);
 	const [notificationsCount, setNotificationsCount] = useState<number>(1);
 
 	async function upload() {
+		setSubmitError("");
 		const data = new FormData();
 		data.set("title", newTitle);
 		data.set("content", newContent);
 
-		const res = await fetch("/api/dashboard/notifications/", {
-			method: "POST",
-			body: data,
-		});
+		try {
+			const res = await fetch("/api/dashboard/notifications/", {
+				method: "POST",
+				body: data,
+			});
 
-		if (!res.ok) throw new Error(await res.text());
+			if (!res.ok) {
+				const responseData = await res.json().catch(() => null);
+				setSubmitError(responseData?.error || "Nie udało się dodać informacji.");
+				return;
+			}
 
-		if (res.ok) {
 			setNewTitle("");
 			setNewContent("");
 			refetchNotifications();
+		} catch {
+			setSubmitError("Wystąpił błąd połączenia. Spróbuj ponownie.");
 		}
 	}
 
@@ -83,6 +91,7 @@ export default function Page() {
 				>
 					Dodaj informację
 				</button>
+				{submitError && <p className="text-sm text-red-600 mt-1">{submitError}</p>}
 			</div>
 
 			<div className="flex w-full flex-col gap-y-3 md:gap-2 lg:gap-3 xl:gap-4 4xl:gap-6">

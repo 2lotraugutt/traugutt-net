@@ -44,7 +44,7 @@ export default function Page({ params }: { params: { id: string } }) {
 							image: undefined,
 						};
 						return data;
-					})
+					}),
 				);
 			} else router.back();
 		}
@@ -73,14 +73,21 @@ export default function Page({ params }: { params: { id: string } }) {
 			data.append("galleryNames[]", file.name as string);
 		}
 
-		const res = await fetch("/api/dashboard/posts/post", {
-			method: "PUT",
-			body: data,
-		});
-		// handle the error
-		if (!res.ok) throw new Error(await res.text());
+		try {
+			const res = await fetch("/api/dashboard/posts/post", {
+				method: "PUT",
+				body: data,
+			});
 
-		if (res.ok) setUploaded(true);
+			if (!res.ok) {
+				setUploaded(false);
+				return;
+			}
+
+			setUploaded(true);
+		} catch {
+			setUploaded(false);
+		}
 	}
 
 	if (stage == 0) return <EditPostStageZero up={stageUp} />;
